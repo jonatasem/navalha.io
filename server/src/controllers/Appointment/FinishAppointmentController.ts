@@ -11,7 +11,9 @@ class FinishAppointmentController {
     const finishAppointmentService = new FinishAppointmentService();
 
     try {
-      const appointment = await finishAppointmentService.execute({ appointmentId: id });
+      const appointment = await finishAppointmentService.execute({
+        appointmentId: id,
+      });
       return reply.status(200).send(appointment);
     } catch (error: any) {
       return reply.status(400).send({ error: error.message });

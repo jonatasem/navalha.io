@@ -48,7 +48,7 @@ export class CreateAppointmentService {
       minute: "2-digit",
     });
 
-    // MENSAGEM PARA O ADMIN 
+    // MENSAGEM PARA O ADMIN
     if (appointment.barber?.phone) {
       const barberMessage =
         `🔔 *Novo Agendamento Pendente!*\n\n` +
@@ -62,7 +62,7 @@ export class CreateAppointmentService {
 
       whatsAppProvider.sendMessage(appointment.barber.phone, barberMessage);
     }
-    
+
     return appointment;
   }
 }

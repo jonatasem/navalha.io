@@ -27,7 +27,9 @@ class WhatsAppProvider {
 
     // Avisa no console quando o WhatsApp estiver pronto para uso
     this.client.on("ready", () => {
-      console.log("✅ [WhatsApp Bot] Conectado e pronto para enviar mensagens!");
+      console.log(
+        "✅ [WhatsApp Bot] Conectado e pronto para enviar mensagens!",
+      );
       this.isReady = true;
     });
 
@@ -50,7 +52,9 @@ class WhatsAppProvider {
    */
   async sendMessage(phone: string, message: string) {
     if (!this.isReady) {
-      console.log("⚠️ [WhatsApp] Tentativa de envio ignorada: WhatsApp ainda não está pronto.");
+      console.log(
+        "⚠️ [WhatsApp] Tentativa de envio ignorada: WhatsApp ainda não está pronto.",
+      );
       return;
     }
 

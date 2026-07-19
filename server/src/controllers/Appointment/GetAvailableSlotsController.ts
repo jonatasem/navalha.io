@@ -10,12 +10,12 @@ class GetAvailableSlotsController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
     const { date, barberId } = request.query as QueryParams;
 
-    if(!date){
-        throw new Error("A data é necessária (YYYY-MM-DD)");
+    if (!date) {
+      throw new Error("A data é necessária (YYYY-MM-DD)");
     }
 
-    if(!barberId){
-        throw new Error("Informe o barberId nos query parameters");
+    if (!barberId) {
+      throw new Error("Informe o barberId nos query parameters");
     }
 
     const getAvailableSlotsService = new GetAvailableSlotsService();

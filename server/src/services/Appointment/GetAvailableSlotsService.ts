@@ -1,13 +1,12 @@
 import prismaClient from "../../prisma/index.js";
 
 interface SlotsRequest {
-  date: string; 
+  date: string;
   barberId: string;
 }
 
 class GetAvailableSlotsService {
   async execute({ date, barberId }: SlotsRequest) {
-    
     // Garante que a string de data é válida
     const startDate = new Date(`${date}T00:00:00.000Z`);
     const endDate = new Date(`${date}T23:59:59.999Z`);
@@ -39,8 +38,12 @@ class GetAvailableSlotsService {
     });
 
     const slots = [];
-    let currentTime = new Date(`${date}T${String(openingTime).padStart(2, "0")}:00:00.000Z`);
-    const endTime = new Date(`${date}T${String(closingTime).padStart(2, "0")}:00:00.000Z`);
+    let currentTime = new Date(
+      `${date}T${String(openingTime).padStart(2, "0")}:00:00.000Z`,
+    );
+    const endTime = new Date(
+      `${date}T${String(closingTime).padStart(2, "0")}:00:00.000Z`,
+    );
 
     while (currentTime < endTime) {
       const timeString = `${String(currentTime.getUTCHours()).padStart(2, "0")}:${String(currentTime.getUTCMinutes()).padStart(2, "0")}`;

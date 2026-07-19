@@ -7,7 +7,6 @@ interface FinishAppointmentProps {
 
 class FinishAppointmentService {
   async execute({ appointmentId }: FinishAppointmentProps) {
-
     // Busca o agendamento incluindo serviço, cliente e barbeiro
     const appointment = await prismaClient.appointment.findUnique({
       where: { id: appointmentId },
@@ -26,7 +25,9 @@ class FinishAppointmentService {
 
     // Verifica e abate do pacote (Se houver saldo)
     if (activePackage) {
-      const isHaircut = appointment.service.name.toLowerCase().includes("corte");
+      const isHaircut = appointment.service.name
+        .toLowerCase()
+        .includes("corte");
       const isBeard = appointment.service.name.toLowerCase().includes("barba");
 
       if (isHaircut && activePackage.cortesRestantes > 0) {

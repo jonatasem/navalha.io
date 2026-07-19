@@ -22,7 +22,10 @@ class GetDashboardMetricsService {
     });
 
     // Faturamento dos últimos 30 dias
-    const monthlyRevenue = recentAppointments.reduce((acc, item) => acc + item.service.price, 0);
+    const monthlyRevenue = recentAppointments.reduce(
+      (acc, item) => acc + item.service.price,
+      0,
+    );
 
     // Alerta de Inatividade: Clientes que não agendam há mais de 25 dias
     const allClients = await prismaClient.client.findMany({
@@ -47,7 +50,11 @@ class GetDashboardMetricsService {
       totalAppointmentsMonth: recentAppointments.length,
       topClients,
       inactiveClientsCount: inactiveClients.length,
-      inactiveClientsList: inactiveClients.map((c) => ({ id: c.id, name: c.name, phone: c.phone })),
+      inactiveClientsList: inactiveClients.map((c) => ({
+        id: c.id,
+        name: c.name,
+        phone: c.phone,
+      })),
     };
   }
 }
