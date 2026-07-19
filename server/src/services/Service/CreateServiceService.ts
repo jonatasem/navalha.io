@@ -1,13 +1,13 @@
 import prismaClient from "../../prisma/index.js";
 
-interface ServiceProps {
+interface CreateServiceProps {
   name: string;
   price: number;
   duration: number;
 }
 
 class CreateServiceService {
-  async execute({ name, price, duration }: ServiceProps) {
+  async execute({ name, price, duration }: CreateServiceProps) {
     // Verifica se os dados obrigatorios chegaram corretamente
     if (!name || !price || !duration) {
       throw new Error("Campos obrigatorios nao preenchidos");

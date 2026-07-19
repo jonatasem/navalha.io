@@ -1,7 +1,7 @@
 import type { FastifyRequest, FastifyReply } from "fastify";
 import { CreateServiceService } from "../../services/Service/CreateServiceService.js";
 
-interface ServiceBody {
+interface CreateServiceProps {
   name: string;
   price: number;
   duration: number;
@@ -10,7 +10,7 @@ interface ServiceBody {
 class CreateServiceController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
     // Captura os dados do corpo da requisicao
-    const { name, price, duration } = request.body as ServiceBody;
+    const { name, price, duration } = request.body as CreateServiceProps;
     const createServiceService = new CreateServiceService();
 
     try {
