@@ -2,3 +2,5 @@ node_modules
 .env
 dist
 teste.txt
+.wwebjs_auth
+.wwebjs_cache

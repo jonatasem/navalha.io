@@ -1,12 +1,13 @@
 import prismaClient from "../../prisma/index.js";
 
 interface SlotsRequest {
-  date: string; // Espera "YYYY-MM-DD"
+  date: string; 
   barberId: string;
 }
 
 class GetAvailableSlotsService {
   async execute({ date, barberId }: SlotsRequest) {
+    
     // Garante que a string de data é válida
     const startDate = new Date(`${date}T00:00:00.000Z`);
     const endDate = new Date(`${date}T23:59:59.999Z`);

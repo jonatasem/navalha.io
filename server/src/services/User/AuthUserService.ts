@@ -9,6 +9,7 @@ interface AuthUserProps {
 
 class AuthUserService {
   async execute({ email, password }: AuthUserProps) {
+    
     // Verifica se os dados foram enviados
     if (!email || !password) {
       throw new Error("E-mail e senha são obrigatórios");

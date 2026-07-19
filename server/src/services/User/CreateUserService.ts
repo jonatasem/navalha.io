@@ -9,6 +9,7 @@ interface CreateUserProps {
 
 export class CreateUserService {
   async execute({ name, email, password }: CreateUserProps) {
+    
     // Se os dados nao forem enviados, retorne erro
     if (!name || !email || !password) {
       throw new Error("Todos os campos são obrigatórios");
