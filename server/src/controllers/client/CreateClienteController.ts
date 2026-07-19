@@ -1,14 +1,14 @@
 import type { FastifyRequest, FastifyReply } from "fastify";
 import { CreateClientService } from "../../services/client/CreateClienteService.js";
 
-interface CreateClientBody {
+interface CreateClientProps {
   name: string;
   phone: string;
 }
 
 export class CreateClientController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
-    const { name, phone } = request.body as CreateClientBody;
+    const { name, phone } = request.body as CreateClientProps;
     const createClientService = new CreateClientService();
 
     try {
