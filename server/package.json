@@ -7,7 +7,8 @@
     "dev": "tsx watch src/server.ts",
     "build": "npm run prisma:generate && tsc",
     "start": "node dist/server.js",
-    "prettier": "npx prettier . --write"
+    "prettier": "npx prettier . --write",
+    "prisma:generate": "prisma generate"
   },
   "keywords": [],
   "type": "module",
