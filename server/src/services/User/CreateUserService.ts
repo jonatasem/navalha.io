@@ -9,7 +9,6 @@ interface CreateUserProps {
 
 export class CreateUserService {
   async execute({ name, email, password }: CreateUserProps) {
-
     // Se os dados nao forem enviados, retorne erro
     if (!name || !email || !password) {
       throw new Error("Todos os campos são obrigatórios");
@@ -22,7 +21,9 @@ export class CreateUserService {
 
     // Se existir, retorne um erro
     if (userAlreadyExists) {
-      throw new Error("Este e-mail já está em uso por outro usuário administrativo");
+      throw new Error(
+        "Este e-mail já está em uso por outro usuário administrativo",
+      );
     }
 
     // Gera o hash seguro da senha
