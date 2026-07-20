@@ -60,7 +60,7 @@ export class CreateAppointmentService {
         `Acesse o painel para confirmar ou gerenciar:\n` +
         `http://localhost:5173/dashboard`;
 
-      whatsAppProvider.sendTextMessage(appointment.barber.phone, barberMessage);
+      whatsAppProvider.sendMessage(appointment.barber.phone, barberMessage);
     }
 
     return appointment;
