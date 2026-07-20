@@ -21,24 +21,24 @@ class WhatsAppProvider {
   private initializeEvents() {
     // Exibe o QR Code no terminal se precisar autenticar
     this.client.on("qr", (qr) => {
-      console.log("\n📱 [WhatsApp] Escaneie o QR Code abaixo para conectar:");
+      console.log("\nEscaneie o QR Code abaixo para conectar:");
       qrcode.generate(qr, { small: true });
     });
 
     // Avisa no console quando o WhatsApp estiver pronto para uso
     this.client.on("ready", () => {
       console.log(
-        "✅ [WhatsApp Bot] Conectado e pronto para enviar mensagens!",
+        "Conectado e pronto para enviar mensagens!",
       );
       this.isReady = true;
     });
 
     this.client.on("auth_failure", (message) => {
-      console.error("❌ [WhatsApp Bot] Falha na autenticação:", message);
+      console.error("Falha na autenticação:", message);
     });
 
     this.client.on("disconnected", (reason) => {
-      console.log("⚠️ [WhatsApp Bot] Desconectado:", reason);
+      console.log("Desconectado:", reason);
       this.isReady = false;
     });
 
@@ -47,13 +47,13 @@ class WhatsAppProvider {
 
   /**
    * Envia uma mensagem para o número informado
-   * @param phone Número do telefone do cliente (ex: "18997215026")
+   * @param phone Número do telefone do cliente
    * @param message Texto da mensagem
    */
   async sendMessage(phone: string, message: string) {
     if (!this.isReady) {
       console.log(
-        "⚠️ [WhatsApp] Tentativa de envio ignorada: WhatsApp ainda não está pronto.",
+        "Tentativa de envio ignorada: WhatsApp ainda não está pronto.",
       );
       return;
     }
@@ -71,9 +71,9 @@ class WhatsAppProvider {
       const chatId = `${formattedPhone}@c.us`;
 
       await this.client.sendMessage(chatId, message);
-      console.log(`✉️ [WhatsApp] Confirmação enviada para +${formattedPhone}`);
+      console.log(`✉️ [Confirmação enviada para +${formattedPhone}`);
     } catch (error) {
-      console.error("❌ [WhatsApp] Erro ao disparar mensagem:", error);
+      console.error("Erro ao disparar mensagem:", error);
     }
   }
 }
