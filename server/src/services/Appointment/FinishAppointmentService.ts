@@ -72,7 +72,7 @@ class FinishAppointmentService {
         `⏰ *Horário:* ${formattedTime}\n\n` +
         `Te esperamos lá!`;
 
-      whatsAppProvider.sendMessage(appointment.client.phone, clientMessage);
+      whatsAppProvider.sendTextMessage(appointment.client.phone, clientMessage);
     }
 
     return updatedAppointment;

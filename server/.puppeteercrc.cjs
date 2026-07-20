@@ -7,3 +7,4 @@ module.exports = {
   // Força o Puppeteer a baixar o Chrome DENTRO da pasta do projeto
   cacheDirectory: join(__dirname, '.cache', 'puppeteer'),
 };
+

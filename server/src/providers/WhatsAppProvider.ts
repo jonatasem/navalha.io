@@ -1,90 +1,83 @@
-import pkg from "whatsapp-web.js";
-const { Client, LocalAuth } = pkg;
+import makeWASocket, {
+  DisconnectReason,
+  useMultiFileAuthState, type
+  WASocket,
+} from "@whiskeysockets/baileys";
+import { Boom } from "@hapi/boom";
 import qrcode from "qrcode-terminal";
+import pino from "pino";
 
 class WhatsAppProvider {
-  private client: any;
-  private isReady: boolean = false;
+  private socket: WASocket | null = null;
+  private ready: boolean = false;
 
-  constructor() {
-    this.client = new Client({
+  public async initialize(): Promise<void> {
+    // Armazena as credenciais da sessão na pasta local auth_info_baileys
+    const { state, saveCreds } = await useMultiFileAuthState("auth_info_baileys");
 
-      // Salva os dados do login na pasta .wwebjs_auth
-      authStrategy: new LocalAuth({ clientId: "navalha-bot" }),
-      puppeteer: {
-        headless: true,
-        args: [
-          "--no-sandbox",
-          "--disable-setuid-sandbox",
-          "--disable-dev-shm-usage",
-          "--disable-accelerated-2d-canvas",
-          "--no-first-run",
-          "--no-zygote",
-          "--disable-gpu",
-        ],
-      },
+    this.socket = makeWASocket({
+      auth: state,
+      printQRInTerminal: false,
+      logger: pino({ level: "silent" }), // Silencia os logs internos do Baileys
     });
 
-    this.initializeEvents();
-  }
+    // Salva as credenciais sempre que a sessão atualizar
+    this.socket.ev.on("creds.update", saveCreds);
 
-  private initializeEvents() {
-    // Exibe o QR Code no terminal se precisar autenticar
-    this.client.on("qr", (qr: string) => {
-      console.log("\nEscaneie o QR Code abaixo para conectar:");
-      qrcode.generate(qr, { small: true });
+    // Gerencia as conexões e desconexões
+    this.socket.ev.on("connection.update", (update) => {
+      const { connection, lastDisconnect, qr } = update;
+
+      // Exibe o QR Code no terminal quando gerado
+      if (qr) {
+        console.log("\n================ Escaneie o QR Code ================\n");
+        qrcode.generate(qr, { small: true });
+      }
+
+      if (connection === "close") {
+        this.ready = false;
+        const statusCode = (lastDisconnect?.error as Boom)?.output?.statusCode;
+        const shouldReconnect = statusCode !== DisconnectReason.loggedOut;
+
+        console.log(
+          `Conexão do WhatsApp fechada (código: ${statusCode}). Reconectando?: ${shouldReconnect}`
+        );
+
+        if (shouldReconnect) {
+          this.initialize();
+        }
+      } else if (connection === "open") {
+        this.ready = true;
+        console.log("⚡ WhatsAppProvider conectado com sucesso!");
+      }
     });
-
-    // Avisa no console quando o WhatsApp estiver pronto para uso
-    this.client.on("ready", () => {
-      console.log("Conectado e pronto para enviar mensagens!");
-      this.isReady = true;
-    });
-
-    this.client.on("auth_failure", (message: string) => {
-      console.error("Falha na autenticação:", message);
-    });
-
-    this.client.on("disconnected", (reason: string) => {
-      console.log("Desconectado:", reason);
-      this.isReady = false;
-    });
-
-    this.client.initialize();
   }
 
   /**
-   * Envia uma mensagem para o numero informado
-   * @param phone Número do telefone do cliente
+   * Envia uma mensagem de texto simples para um número
+   * @param to Número de telefone com DDD (ex: "5511999999999")
    * @param message Texto da mensagem
    */
-  async sendMessage(phone: string, message: string) {
-    if (!this.isReady) {
-      console.log(
-        "Tentativa de envio ignorada: WhatsApp ainda não está pronto."
-      );
-      return;
+  public async sendTextMessage(to: string, message: string): Promise<void> {
+    if (!this.socket || !this.ready) {
+      throw new Error("Serviço do WhatsApp ainda não está pronto/conectado.");
     }
 
-    try {
-      // Limpa caracteres especiais do numero
-      const cleanPhone = phone.replace(/\D/g, "");
+    // Formata o número para o padrão JID do WhatsApp (ex: 5511999999999@s.whatsapp.net)
+    const formattedJid = to.includes("@s.whatsapp.net")
+      ? to
+      : `${to.replace(/\D/g, "")}@s.whatsapp.net`;
 
-      // Garante o código do Brasil (55) no início do número
-      const formattedPhone = cleanPhone.startsWith("55")
-        ? cleanPhone
-        : `55${cleanPhone}`;
+    await this.socket.sendMessage(formattedJid, { text: message });
+  }
 
-      // Formato exigido pelo whatsapp-web.js
-      const chatId = `${formattedPhone}@c.us`;
-
-      await this.client.sendMessage(chatId, message);
-      console.log(`✉️ [Confirmação enviada para +${formattedPhone}]`);
-    } catch (error) {
-      console.error("Erro ao disparar mensagem:", error);
-    }
+  /**
+   * Retorna o status atual da conexão
+   */
+  public isConnected(): boolean {
+    return this.ready;
   }
 }
 
-// Exporta uma instância unica
+// Exporta uma única instância (Singleton) para ser usada na aplicação inteira
 export const whatsAppProvider = new WhatsAppProvider();

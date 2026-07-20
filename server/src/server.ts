@@ -1,27 +1,31 @@
 import fastify from "fastify";
-import { routes } from "./routes/index.js";
 import cors from "@fastify/cors";
+import { routes } from "./routes/index.js";
+import { whatsAppProvider } from "./providers/WhatsAppProvider.js";
 
-// Desativando os logs
-const app = fastify({
-  logger: false,
-});
+const app = fastify({ logger: false });
 
 const start = async () => {
   await app.register(cors, {
-    origin: "*", //temporário
-    methods: ["GET", "POST", "UPDATE", "DELETE"],
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   });
 
   await app.register(routes);
 
   try {
+    const port = Number(process.env.PORT) || 3333;
+
     await app.listen({
-      port: 3333,
-      host: "0.0.0.0", //temporário
+      port,
+      host: "0.0.0.0",
     });
-    console.log("Navalha.io está online na porta 3333");
+
+    console.log(`Navalha.io está online na porta ${port}`);
+
+    // Inicializa a conexão do WhatsApp
+    await whatsAppProvider.initialize();
   } catch (err) {
     app.log.error(err);
     process.exit(1);
