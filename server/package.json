@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",
+    "postinstall": "npx puppeteer browsers install chrome",
     "build": "npm run prisma:generate && tsc",
     "start": "node dist/server.js",
     "prettier": "npx prettier . --write",
