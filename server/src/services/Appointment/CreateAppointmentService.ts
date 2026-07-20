@@ -1,5 +1,5 @@
 import prismaClient from "../../prisma/index.js";
-import { whatsAppProvider } from "../../providers/WhatsappProvider.js";
+import { whatsAppProvider } from "../../providers/WhatsAppProvider.js";
 
 interface CreateAppointmentProps {
   clientId: string;

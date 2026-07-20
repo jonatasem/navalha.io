@@ -1,5 +1,5 @@
 import prismaClient from "../../prisma/index.js";
-import { whatsAppProvider } from "../../providers/WhatsappProvider.js";
+import { whatsAppProvider } from "../../providers/WhatsAppProvider.js";
 
 interface FinishAppointmentProps {
   appointmentId: string;
@@ -7,6 +7,7 @@ interface FinishAppointmentProps {
 
 class FinishAppointmentService {
   async execute({ appointmentId }: FinishAppointmentProps) {
+    
     // Busca o agendamento incluindo serviço, cliente e barbeiro
     const appointment = await prismaClient.appointment.findUnique({
       where: { id: appointmentId },
